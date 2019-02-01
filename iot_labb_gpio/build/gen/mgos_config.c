@@ -7,8 +7,8 @@
 #include <stddef.h>
 #include "mgos_config.h"
 
-const struct mgos_conf_entry mgos_config_schema_[138] = {
-  {.type = CONF_TYPE_OBJECT, .key = "", .offset = 0, .num_desc = 137},
+const struct mgos_conf_entry mgos_config_schema_[140] = {
+  {.type = CONF_TYPE_OBJECT, .key = "", .offset = 0, .num_desc = 139},
   {.type = CONF_TYPE_OBJECT, .key = "debug", .offset = offsetof(struct mgos_config, debug), .num_desc = 8},
   {.type = CONF_TYPE_STRING, .key = "udp_log_addr", .offset = offsetof(struct mgos_config, debug.udp_log_addr)},
   {.type = CONF_TYPE_INT, .key = "level", .offset = offsetof(struct mgos_config, debug.level)},
@@ -21,7 +21,7 @@ const struct mgos_conf_entry mgos_config_schema_[138] = {
   {.type = CONF_TYPE_OBJECT, .key = "device", .offset = offsetof(struct mgos_config, device), .num_desc = 2},
   {.type = CONF_TYPE_STRING, .key = "id", .offset = offsetof(struct mgos_config, device.id)},
   {.type = CONF_TYPE_STRING, .key = "license", .offset = offsetof(struct mgos_config, device.license)},
-  {.type = CONF_TYPE_OBJECT, .key = "sys", .offset = offsetof(struct mgos_config, sys), .num_desc = 14},
+  {.type = CONF_TYPE_OBJECT, .key = "sys", .offset = offsetof(struct mgos_config, sys), .num_desc = 16},
   {.type = CONF_TYPE_OBJECT, .key = "mount", .offset = offsetof(struct mgos_config, sys.mount), .num_desc = 5},
   {.type = CONF_TYPE_STRING, .key = "path", .offset = offsetof(struct mgos_config, sys.mount.path)},
   {.type = CONF_TYPE_STRING, .key = "dev_type", .offset = offsetof(struct mgos_config, sys.mount.dev_type)},
@@ -31,6 +31,8 @@ const struct mgos_conf_entry mgos_config_schema_[138] = {
   {.type = CONF_TYPE_STRING, .key = "tz_spec", .offset = offsetof(struct mgos_config, sys.tz_spec)},
   {.type = CONF_TYPE_INT, .key = "wdt_timeout", .offset = offsetof(struct mgos_config, sys.wdt_timeout)},
   {.type = CONF_TYPE_STRING, .key = "pref_ota_lib", .offset = offsetof(struct mgos_config, sys.pref_ota_lib)},
+  {.type = CONF_TYPE_INT, .key = "esp32_adc_vref", .offset = offsetof(struct mgos_config, sys.esp32_adc_vref)},
+  {.type = CONF_TYPE_INT, .key = "esp32_adc_width", .offset = offsetof(struct mgos_config, sys.esp32_adc_width)},
   {.type = CONF_TYPE_OBJECT, .key = "atca", .offset = offsetof(struct mgos_config, sys.atca), .num_desc = 4},
   {.type = CONF_TYPE_BOOL, .key = "enable", .offset = offsetof(struct mgos_config, sys.atca.enable)},
   {.type = CONF_TYPE_INT, .key = "i2c_bus", .offset = offsetof(struct mgos_config, sys.atca.i2c_bus)},
@@ -221,6 +223,12 @@ int         mgos_config_get_sys_wdt_timeout(struct mgos_config *cfg) {
 }
 const char *mgos_config_get_sys_pref_ota_lib(struct mgos_config *cfg) {
   return cfg->sys.pref_ota_lib;
+}
+int         mgos_config_get_sys_esp32_adc_vref(struct mgos_config *cfg) {
+  return cfg->sys.esp32_adc_vref;
+}
+int         mgos_config_get_sys_esp32_adc_width(struct mgos_config *cfg) {
+  return cfg->sys.esp32_adc_width;
 }
 const struct mgos_config_sys_atca *mgos_config_get_sys_atca(struct mgos_config *cfg) {
   return &cfg->sys.atca;
@@ -623,6 +631,12 @@ void mgos_config_set_sys_wdt_timeout(struct mgos_config *cfg, int         val) {
 }
 void mgos_config_set_sys_pref_ota_lib(struct mgos_config *cfg, const char *val) {
   mgos_conf_set_str(&cfg->sys.pref_ota_lib, val);
+}
+void mgos_config_set_sys_esp32_adc_vref(struct mgos_config *cfg, int         val) {
+  cfg->sys.esp32_adc_vref = val;
+}
+void mgos_config_set_sys_esp32_adc_width(struct mgos_config *cfg, int         val) {
+  cfg->sys.esp32_adc_width = val;
 }
 void mgos_config_set_sys_atca_enable(struct mgos_config *cfg, int         val) {
   cfg->sys.atca.enable = val;

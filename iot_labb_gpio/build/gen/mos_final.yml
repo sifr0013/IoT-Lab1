@@ -3,16 +3,14 @@ type: app
 version: "1.0"
 platform: esp32
 platforms:
-- cc3200
-- cc3220
 - esp32
 - esp8266
-- stm32
 author: mongoose-os
 description: A Mongoose OS app skeleton
 sources:
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/src/main.c
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/build/gen/mgos_deps_init.c
+- /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/adc/esp32/src/esp32_adc.c
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/i2c/src/mgos_i2c_master.c
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/i2c/src/esp32/esp32_i2c_master.c
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/atca/src/mgos_atca.c
@@ -53,6 +51,7 @@ sources:
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/wifi/src/mjs_wifi.c
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/wifi/esp32/src/esp32_wifi.c
 includes:
+- /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/adc/include
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/i2c/include
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/atca/include
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/atca/cryptoauthlib/lib
@@ -91,6 +90,7 @@ filesystem:
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/modules/mjs/mjs/lib/api_dataview.js
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/modules/mjs/mjs/lib/api_file.js
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/modules/mjs/mjs/lib/api_math.js
+- /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/adc/mjs_fs/api_adc.js
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/i2c/mjs_fs/api_i2c.js
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/rpc-common/mjs_fs/api_rpc.js
 - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/wifi/mjs_fs/api_wifi.js
@@ -106,6 +106,14 @@ modules:
   location: https://github.com/cesanta/mjs
   name: mjs_module
 config_schema:
+- - sys.esp32_adc_vref
+  - i
+  - 0
+  - title: ADC Vref, in mV
+- - sys.esp32_adc_width
+  - i
+  - 3
+  - title: ADC width, see ESP32 IDF
 - - i2c
   - o
   - title: I2C settings
@@ -406,6 +414,7 @@ build_vars:
   ESP_IDF_EXTRA_COMPONENTS: ""
   ESP_IDF_SDKCONFIG_OPTS: |2
      CONFIG_SUPPORT_STATIC_ALLOCATION=y
+  MGOS_HAVE_ADC: "1"
   MGOS_HAVE_ATCA: "1"
   MGOS_HAVE_CA_BUNDLE: "1"
   MGOS_HAVE_CORE: "1"
@@ -437,6 +446,7 @@ cdefs:
   MG_SSL_IF_MBEDTLS_FREE_CERTS: "1"
   MGOS_ENABLE_RPC_CHANNEL_HTTP: "1"
   MGOS_ENABLE_SYS_SERVICE: "1"
+  MGOS_HAVE_ADC: "1"
   MGOS_HAVE_ATCA: "1"
   MGOS_HAVE_CA_BUNDLE: "1"
   MGOS_HAVE_CORE: "1"
@@ -461,6 +471,15 @@ modules_version: 2.11.0
 mongoose_os_version: 2.11.0
 manifest_version: "2017-09-29"
 libs_handled:
+- lib:
+    origin: https://github.com/mongoose-os-libs/adc
+    location: https://github.com/mongoose-os-libs/adc
+    name: adc
+  path: /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/adc
+  init_deps:
+  - core
+  sources:
+  - /fwbuild-volumes/2.11.0/apps/iot_labb_gpio/esp32/build_contexts/build_ctx_987927825/deps/adc/esp32/src/esp32_adc.c
 - lib:
     origin: https://github.com/mongoose-os-libs/i2c
     location: https://github.com/mongoose-os-libs/i2c
@@ -629,6 +648,7 @@ init_deps:
 - vfs-fs-lfs
 - vfs-fs-spiffs
 - core
+- adc
 - i2c
 - atca
 - ca-bundle

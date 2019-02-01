@@ -48,6 +48,8 @@ struct mgos_config_sys {
   char *tz_spec;
   int wdt_timeout;
   char *pref_ota_lib;
+  int esp32_adc_vref;
+  int esp32_adc_width;
   struct mgos_config_sys_atca atca;
 };
 
@@ -225,6 +227,10 @@ const char *mgos_config_get_sys_tz_spec(struct mgos_config *cfg);
 int         mgos_config_get_sys_wdt_timeout(struct mgos_config *cfg);
 #define MGOS_CONFIG_HAVE_SYS_PREF_OTA_LIB
 const char *mgos_config_get_sys_pref_ota_lib(struct mgos_config *cfg);
+#define MGOS_CONFIG_HAVE_SYS_ESP32_ADC_VREF
+int         mgos_config_get_sys_esp32_adc_vref(struct mgos_config *cfg);
+#define MGOS_CONFIG_HAVE_SYS_ESP32_ADC_WIDTH
+int         mgos_config_get_sys_esp32_adc_width(struct mgos_config *cfg);
 #define MGOS_CONFIG_HAVE_SYS_ATCA
 const struct mgos_config_sys_atca *mgos_config_get_sys_atca(struct mgos_config *cfg);
 #define MGOS_CONFIG_HAVE_SYS_ATCA_ENABLE
@@ -474,6 +480,8 @@ void mgos_config_set_sys_mount_fs_opts(struct mgos_config *cfg, const char *val)
 void mgos_config_set_sys_tz_spec(struct mgos_config *cfg, const char *val);
 void mgos_config_set_sys_wdt_timeout(struct mgos_config *cfg, int         val);
 void mgos_config_set_sys_pref_ota_lib(struct mgos_config *cfg, const char *val);
+void mgos_config_set_sys_esp32_adc_vref(struct mgos_config *cfg, int         val);
+void mgos_config_set_sys_esp32_adc_width(struct mgos_config *cfg, int         val);
 void mgos_config_set_sys_atca_enable(struct mgos_config *cfg, int         val);
 void mgos_config_set_sys_atca_i2c_bus(struct mgos_config *cfg, int         val);
 void mgos_config_set_sys_atca_i2c_addr(struct mgos_config *cfg, int         val);
@@ -622,6 +630,10 @@ static inline const char *mgos_sys_config_get_sys_tz_spec(void) { return mgos_co
 static inline int         mgos_sys_config_get_sys_wdt_timeout(void) { return mgos_config_get_sys_wdt_timeout(&mgos_sys_config); }
 #define MGOS_SYS_CONFIG_HAVE_SYS_PREF_OTA_LIB
 static inline const char *mgos_sys_config_get_sys_pref_ota_lib(void) { return mgos_config_get_sys_pref_ota_lib(&mgos_sys_config); }
+#define MGOS_SYS_CONFIG_HAVE_SYS_ESP32_ADC_VREF
+static inline int         mgos_sys_config_get_sys_esp32_adc_vref(void) { return mgos_config_get_sys_esp32_adc_vref(&mgos_sys_config); }
+#define MGOS_SYS_CONFIG_HAVE_SYS_ESP32_ADC_WIDTH
+static inline int         mgos_sys_config_get_sys_esp32_adc_width(void) { return mgos_config_get_sys_esp32_adc_width(&mgos_sys_config); }
 #define MGOS_SYS_CONFIG_HAVE_SYS_ATCA
 static inline const struct mgos_config_sys_atca *mgos_sys_config_get_sys_atca(void) { return mgos_config_get_sys_atca(&mgos_sys_config); }
 #define MGOS_SYS_CONFIG_HAVE_SYS_ATCA_ENABLE
@@ -871,6 +883,8 @@ static inline void mgos_sys_config_set_sys_mount_fs_opts(const char *val) { mgos
 static inline void mgos_sys_config_set_sys_tz_spec(const char *val) { mgos_config_set_sys_tz_spec(&mgos_sys_config, val); }
 static inline void mgos_sys_config_set_sys_wdt_timeout(int         val) { mgos_config_set_sys_wdt_timeout(&mgos_sys_config, val); }
 static inline void mgos_sys_config_set_sys_pref_ota_lib(const char *val) { mgos_config_set_sys_pref_ota_lib(&mgos_sys_config, val); }
+static inline void mgos_sys_config_set_sys_esp32_adc_vref(int         val) { mgos_config_set_sys_esp32_adc_vref(&mgos_sys_config, val); }
+static inline void mgos_sys_config_set_sys_esp32_adc_width(int         val) { mgos_config_set_sys_esp32_adc_width(&mgos_sys_config, val); }
 static inline void mgos_sys_config_set_sys_atca_enable(int         val) { mgos_config_set_sys_atca_enable(&mgos_sys_config, val); }
 static inline void mgos_sys_config_set_sys_atca_i2c_bus(int         val) { mgos_config_set_sys_atca_i2c_bus(&mgos_sys_config, val); }
 static inline void mgos_sys_config_set_sys_atca_i2c_addr(int         val) { mgos_config_set_sys_atca_i2c_addr(&mgos_sys_config, val); }
