@@ -50,11 +50,12 @@ function lcd_init(){
     Sys.usleep(30*1000);
     lcd_cmd("\x6E");
     Sys.usleep(30*1000);
-    lcd_cmd("\x72");
+    //lcd_cmd("\x72"); //Contrast C1
+    lcd_cmd("\x70"); //Contrast C0
     Sys.usleep(30*1000);
     lcd_cmd("\x38");
     Sys.usleep(30*1000);
-    lcd_cmd("\x0F"); //Display on, cursor on, cursor blink on
+    lcd_cmd("\x0C"); //Display on, cursor on, cursor blink on
     //lcd_cmd("\x43"); //Display on, cursor off, cursor blink off
     Sys.usleep(30*1000);
     lcd_cmd("\x01");
@@ -80,36 +81,28 @@ lcd_init(); //Initiate the LCD-screen
 
 //lcd_write("B");
 
-let lcd_String = "";
+function lcd_changePos(pos){
+    lcd_cmd(chr(128+pos));
+    Sys.usleep(30*1000);
+}
+
 function generate_string(temp, tempLimit, larmIsOn){
 
     let temp_string = JSON.stringify(temp);
-    let stringCounter = temp_string.length;
-    if(stringCounter === 1) {
-        temp_string = temp_string+"  ";
-    } else if (stringCounter === 2) {
-        temp_string = temp_string+" ";
-    } else if (stringCounter === 3) {
-        temp_string = temp_string+"";
+    let tempLim_string = JSON.stringify(tempLimit);
+    let celsius = "\xF2"+"C   ";
+
+    let larm = "      ";
+    if(larmIsOn){
+        larm = "VARMT!";
     }
 
-    let temp_limit = JSON.stringify(tempLimit);
-    let stringCounter2 = temp_limit.length;
-    if(stringCounter2 === 1){
-        temp_limit = temp_limit+"  ";
-    } else if (stringCounter2 === 2){
-        temp_limit = temp_limit+" ";
-    } else if (stringCounter2 === 3){
-        temp_limit = temp_limit+"";
-    }
-    let larm = "";
-    if(larmIsOn){
-        larm = "VARMT!          ";
-    } else {
-        larm = "                ";
-    }
-    
-    lcd_String = "TEMPERATURE: "+temp_string+"LIMIT: "+temp_limit+"      "+larm;
+    lcd_changePos(0);
+    lcd_write("TEMP: "+temp_string+celsius);
+    lcd_changePos(16);
+    lcd_write("LIMIT: "+tempLim_string+celsius);
+    lcd_changePos(32);
+    lcd_write(larm);
 }
 
 
@@ -130,7 +123,7 @@ function temp_printer(){
         //SKA LARMA
         larmIsOn = true;
         //SKA LÅTA (IO27)
-        PWM.set(PIN_PWM, 50, 1);
+        PWM.set(PIN_PWM, 200, 0.5);
         //SKA BLINKA
         if(lampIsOff){
             GPIO.write(PIN_LEDR, 1);
@@ -140,11 +133,10 @@ function temp_printer(){
             lampIsOff = true;
         }
     } else {
-        PWM.set(PIN_PWM, 50, 0);
+        PWM.set(PIN_PWM, 200, 0);
         GPIO.write(PIN_LEDR, 0);
     }
     generate_string(Math.round(tempC),scaledTempLim,larmIsOn);
-    lcd_write(lcd_String);
 }
 
 
